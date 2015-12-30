@@ -32,7 +32,7 @@
 
         During the off season, fake data will be added to the app.
     </string>
-    <string name="api_key" translatable="false">0c043ac78cae4621820ba237a3c6bdb0</string>
+    <string name="api_key" translatable="false"></string>
     <!-- Accessibility -->
     <string name="team_name">Team: <xliff:g id="team">%1$s</xliff:g></string>
     <string name="league_name">League: <xliff:g id="league">%1$s</xliff:g></string>

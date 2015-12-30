@@ -19,7 +19,6 @@ public class ScoresProvider extends ContentProvider
     private static final int MATCHES_WITH_LEAGUE = 101;
     private static final int MATCHES_WITH_ID = 102;
     private static final int MATCHES_WITH_DATE = 103;
-    private static final int MATCHES_WITH_MATCH_DAY = 104;
 
     private UriMatcher muriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder ScoreQuery =
@@ -29,8 +28,6 @@ public class ScoresProvider extends ContentProvider
             DatabaseContract.scores_table.DATE_COL + " LIKE ?";
     private static final String SCORES_BY_ID =
             DatabaseContract.scores_table.MATCH_ID + " = ?";
-    private static final String GAME_MATCH_DAY =
-            DatabaseContract.scores_table.MATCH_DAY + " = ?";
 
     static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -39,13 +36,11 @@ public class ScoresProvider extends ContentProvider
         matcher.addURI(authority, "league" , MATCHES_WITH_LEAGUE);
         matcher.addURI(authority, "id" , MATCHES_WITH_ID);
         matcher.addURI(authority, "date" , MATCHES_WITH_DATE);
-        matcher.addURI(DatabaseContract.CONTENT_AUTHORITY, DatabaseContract.PATH_MATCH + "/#" , MATCHES_WITH_MATCH_DAY);
         return matcher;
     }
 
     private int match_uri(Uri uri)
     {
-        final int match = muriMatcher.match(uri);
         String link = uri.toString();
         {
            if(link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString()))
@@ -63,10 +58,6 @@ public class ScoresProvider extends ContentProvider
            else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithLeague().toString()))
            {
                return MATCHES_WITH_LEAGUE;
-           }
-           else if(match == MATCHES_WITH_MATCH_DAY)
-           {
-               return MATCHES_WITH_MATCH_DAY;
            }
         }
         return -1;
@@ -97,8 +88,6 @@ public class ScoresProvider extends ContentProvider
                 return DatabaseContract.scores_table.CONTENT_ITEM_TYPE;
             case MATCHES_WITH_DATE:
                 return DatabaseContract.scores_table.CONTENT_TYPE;
-            case MATCHES_WITH_MATCH_DAY:
-                return DatabaseContract.scores_table.CONTENT_ITEM_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :" + uri );
         }
@@ -130,12 +119,6 @@ public class ScoresProvider extends ContentProvider
             case MATCHES_WITH_LEAGUE: retCursor = mOpenHelper.getReadableDatabase().query(
                     DatabaseContract.SCORES_TABLE,
                     projection,SCORES_BY_LEAGUE,selectionArgs,null,null,sortOrder); break;
-            case MATCHES_WITH_MATCH_DAY:
-                long date = DatabaseContract.scores_table.getDateFromUri(uri);
-                Log.v("DAY", date + "");
-                retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection, GAME_MATCH_DAY,new String[]{Long.toString(date)},null,null,sortOrder); break;
             default: throw new UnsupportedOperationException("Unknown Uri" + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(),uri);

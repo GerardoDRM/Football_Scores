@@ -55,22 +55,11 @@ public class DatabaseContract
         {
             return BASE_CONTENT_URI.buildUpon().appendPath("date").build();
         }
-        public static Uri buildScoreWithStartDate(long date)
-        {
-            return CONTENT_URI_GAME.buildUpon().appendPath(Long.toString(normalizeDate(date))).build();
-        }
-
-
-        public static long getDateFromUri(Uri uri) {
-            return Long.parseLong(uri.getPathSegments().get(1));
-        }
 
     }
     //URI data
     public static final String CONTENT_AUTHORITY = "barqsoft.footballscores";
     public static final String PATH = "scores";
-    public static final String PATH_MATCH = "match";
     public static Uri BASE_CONTENT_URI = Uri.parse("content://"+CONTENT_AUTHORITY);
-    public static final Uri CONTENT_URI_GAME =
-            BASE_CONTENT_URI.buildUpon().appendPath(PATH_MATCH).build();
+
 }
